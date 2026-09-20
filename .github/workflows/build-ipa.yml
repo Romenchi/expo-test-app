@@ -71,13 +71,14 @@ jobs:
             -derivedDataPath "../build/DerivedData" \
             build \
             CODE_SIGN_STYLE="Manual" \
-            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGN_IDENTITY="-" \
             CODE_SIGNING_REQUIRED=NO \
-            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_ALLOWED=YES \
+            DEVELOPMENT_TEAM="" \
             AD_HOC_CODE_SIGNING_ALLOWED=YES \
             ENABLE_USER_SCRIPT_SANDBOXING=NO 2>&1 | tee ../xcodebuild.log || {
               echo "==================== XCODEBUILD FAILED ===================="
-              tail -n 80 ../xcodebuild.log
+              tail -n 150 ../xcodebuild.log
               exit 1
             }
 
@@ -97,3 +98,11 @@ jobs:
           name: ExpoGoTestApp-Sideloadly-IPA
           path: build/ExpoGoTestApp.ipa
           retention-days: 7
+
+      - name: Upload Build Log on Failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: xcodebuild-failure-log
+          path: xcodebuild.log
+          retention-days: 3
