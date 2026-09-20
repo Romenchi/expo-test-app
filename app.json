@@ -1,0 +1,34 @@
+{
+  "expo": {
+    "name": "Expo Go Test App",
+    "slug": "expo-go-test-app",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "backgroundColor": "#1e293b"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.testapp.expogo"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#1e293b",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      }
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "22788550-41d2-4785-9488-7d6f89fa89d0"
+      }
+    },
+    "owner": "zewirzerwri"
+  }
+}
