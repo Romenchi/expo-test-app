@@ -35,7 +35,7 @@ jobs:
       - name: Install dependencies
         run: npm ci || npm install
 
-      - name: Patch ExpoModulesJSI Package.swift for Swift 6.0 compatibility
+      - name: Patch ExpoModulesJSI for Xcode 16 compatibility
         run: |
           python3 -c "
           import re
@@ -46,10 +46,16 @@ jobs:
           content = re.sub(r',\s*(\))', r'\1', content)
           with open(path, 'w', encoding='utf-8') as f:
               f.write(content)
+
+          h_path = 'node_modules/expo-modules-jsi/apple/Sources/ExpoModulesJSI-Cxx/include/RuntimeScheduler.h'
+          with open(h_path, 'r', encoding='utf-8') as f:
+              h = f.read()
+          h = h.replace('#include <swift/bridging>', '#include <swift/bridging>\n#ifndef SWIFT_RETURNS_RETAINED\n#define SWIFT_RETURNS_RETAINED\n#endif')
+          with open(h_path, 'w', encoding='utf-8') as f:
+              f.write(h)
           "
           sed -i '' 's/-disableAutomaticPackageResolution//' node_modules/expo-modules-jsi/apple/scripts/build-xcframework.sh || true
-          echo "Patched Package.swift:"
-          head -n 2 node_modules/expo-modules-jsi/apple/Package.swift
+          echo "Patched Package.swift & RuntimeScheduler.h successfully"
 
       - name: Prebuild iOS project
         run: npx expo prebuild --platform ios --no-install
