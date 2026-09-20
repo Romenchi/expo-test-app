@@ -33,6 +33,13 @@ jobs:
       - name: Install dependencies
         run: npm ci || npm install
 
+      - name: Patch ExpoModulesJSI for Xcode 16 compatibility
+        run: |
+          sed -i '' 's/swift-tools-version: 6.2/swift-tools-version: 6.0/' node_modules/expo-modules-jsi/apple/Package.swift || true
+          sed -i '' 's/-disableAutomaticPackageResolution//' node_modules/expo-modules-jsi/apple/scripts/build-xcframework.sh || true
+          echo "Patched Package.swift:"
+          head -n 2 node_modules/expo-modules-jsi/apple/Package.swift
+
       - name: Prebuild iOS project
         run: npx expo prebuild --platform ios --no-install
 
@@ -44,12 +51,6 @@ jobs:
         run: |
           cd ios
           pod install --repo-update || npx pod-install ios
-
-      - name: Pre-compile ExpoModulesJSI
-        run: |
-          export PODS_ROOT="$(pwd)/ios/Pods"
-          export PLATFORM_NAME="iphoneos"
-          ./node_modules/expo-modules-jsi/apple/scripts/build-xcframework.sh
 
       - name: Build iOS Application (Unsigned)
         run: |
