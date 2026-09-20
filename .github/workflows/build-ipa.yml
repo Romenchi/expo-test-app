@@ -8,9 +8,17 @@ on:
 jobs:
   build-ipa:
     runs-on: macos-14
+    env:
+      LANG: en_US.UTF-8
+      LC_ALL: en_US.UTF-8
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Setup Xcode
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -22,20 +30,22 @@ jobs:
         run: npm ci || npm install
 
       - name: Prebuild iOS project
-        run: npx expo prebuild --platform ios
+        run: npx expo prebuild --platform ios --no-install
 
       - name: Install CocoaPods
         run: |
           cd ios
-          pod install
+          pod install --repo-update || npx pod-install ios
 
       - name: Build iOS Archive (Unsigned)
         run: |
           cd ios
           WORKSPACE=$(ls -d *.xcworkspace | head -n 1)
-          SCHEME=$(xcodebuild -workspace "$WORKSPACE" -list | awk '/Schemes:/{flag=1;next}/^[[:space:]]*$/{flag=0}flag{print $1; exit}' | tr -d ' ')
+          echo "Listing schemes in $WORKSPACE..."
+          xcodebuild -workspace "$WORKSPACE" -list
           
-          echo "Detected scheme: '$SCHEME' from workspace: '$WORKSPACE'"
+          SCHEME=$(xcodebuild -workspace "$WORKSPACE" -list | awk '/Schemes:/{flag=1;next}/^[[:space:]]*$/{flag=0}flag{print $1; exit}' | tr -d ' ')
+          echo "Selected scheme: '$SCHEME'"
           
           xcodebuild \
             -workspace "$WORKSPACE" \
@@ -54,7 +64,7 @@ jobs:
           cp -r build/App.xcarchive/Products/Applications/*.app build/Payload/
           cd build
           zip -r ExpoGoTestApp.ipa Payload
-          echo "IPA created successfully at build/ExpoGoTestApp.ipa"
+          echo "IPA successfully created at build/ExpoGoTestApp.ipa"
 
       - name: Upload IPA Artifact
         uses: actions/upload-artifact@v4
