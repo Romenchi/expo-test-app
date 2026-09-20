@@ -26,11 +26,21 @@ jobs:
           node-version: 20
           cache: 'npm'
 
+      - name: Configure Node for Xcode Phase Scripts
+        run: |
+          sudo ln -sf $(which node) /usr/local/bin/node
+          echo "Node path in /usr/local/bin/node: $(/usr/local/bin/node -v)"
+
       - name: Install dependencies
         run: npm ci || npm install
 
       - name: Prebuild iOS project
         run: npx expo prebuild --platform ios --no-install
+
+      - name: Configure Xcode Environment
+        run: |
+          echo "export NODE_BINARY=$(which node)" > ios/.xcode.env.local
+          cat ios/.xcode.env.local
 
       - name: Install CocoaPods
         run: |
@@ -42,14 +52,14 @@ jobs:
           cd ios
           WORKSPACE=$(ls -d *.xcworkspace | head -n 1)
           PROJECT=$(ls -d *.xcodeproj | head -n 1)
-          
-          # Detect main app scheme from project (avoiding Pods schemes)
-          SCHEME=$(xcodebuild -project "$PROJECT" -list | awk '/Schemes:/{flag=1;next}/^[[:space:]]*$/{flag=0}flag{print; exit}' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
-          SCHEME=${SCHEME:-ExpoGoTestApp}
+          SCHEME="ExpoGoTestApp"
           
           echo "Workspace: $WORKSPACE"
           echo "Project: $PROJECT"
           echo "Building Scheme: '$SCHEME' for iOS device..."
+          
+          # Resolve SPM package dependencies first
+          xcodebuild -workspace "$WORKSPACE" -scheme "$SCHEME" -resolvePackageDependencies || true
           
           set -o pipefail
           xcodebuild \
@@ -64,9 +74,10 @@ jobs:
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGN_IDENTITY="" \
-            AD_HOC_CODE_SIGNING_ALLOWED=YES 2>&1 | tee ../xcodebuild.log || {
+            AD_HOC_CODE_SIGNING_ALLOWED=YES \
+            ENABLE_USER_SCRIPT_SANDBOXING=NO 2>&1 | tee ../xcodebuild.log || {
               echo "==================== XCODEBUILD FAILED ===================="
-              grep -E "(error:|fatal error:)" ../xcodebuild.log || tail -n 80 ../xcodebuild.log
+              grep -E "(error:|fatal error:)" ../xcodebuild.log | head -n 40 || tail -n 80 ../xcodebuild.log
               exit 1
             }
 
