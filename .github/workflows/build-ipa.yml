@@ -15,22 +15,20 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Xcode 15.4
+      - name: Setup Xcode
         uses: maxim-lobanov/setup-xcode@v1
         with:
-          xcode-version: '15.4'
-
-      - name: Configure Xcode & SPM defaults
-        run: |
-          defaults write com.apple.dt.Xcode IDESkipPackagePluginValidation -bool YES
-          defaults write com.apple.dt.Xcode IDESkipMacroFingerprintValidation -bool YES
-          sudo ln -sf $(which node) /usr/local/bin/node
+          xcode-version: latest-stable
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: 'npm'
+
+      - name: Configure System Node Symlink
+        run: |
+          sudo ln -sf $(which node) /usr/local/bin/node
 
       - name: Install dependencies
         run: npm ci || npm install
@@ -47,15 +45,19 @@ jobs:
           cd ios
           pod install --repo-update || npx pod-install ios
 
+      - name: Pre-compile ExpoModulesJSI
+        run: |
+          export PODS_ROOT="$(pwd)/ios/Pods"
+          export PLATFORM_NAME="iphoneos"
+          ./node_modules/expo-modules-jsi/apple/scripts/build-xcframework.sh
+
       - name: Build iOS Application (Unsigned)
         run: |
           cd ios
           WORKSPACE=$(ls -d *.xcworkspace | head -n 1)
-          PROJECT=$(ls -d *.xcodeproj | head -n 1)
           SCHEME="ExpoGoTestApp"
           
           echo "Workspace: $WORKSPACE"
-          echo "Project: $PROJECT"
           echo "Building Scheme: '$SCHEME' for iOS device..."
           
           set -o pipefail
@@ -74,7 +76,7 @@ jobs:
             AD_HOC_CODE_SIGNING_ALLOWED=YES \
             ENABLE_USER_SCRIPT_SANDBOXING=NO 2>&1 | tee ../xcodebuild.log || {
               echo "==================== XCODEBUILD FAILED ===================="
-              tail -n 60 ../xcodebuild.log
+              tail -n 80 ../xcodebuild.log
               exit 1
             }
 
