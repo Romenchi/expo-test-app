@@ -1,68 +1,10 @@
 /Users/runner/work/expo-test-app/expo-test-app/ios/Pods/Headers/Public/React-jsi/jsi/jsi.h:2267:1: warning: umbrella header for module 'jsi' does not include header 'jsilib.h'
 
 ^
-/Users/runner/work/expo-test-app/expo-test-app/node_modules/expo-modules-jsi/apple/Sources/ExpoModulesJSI/Runtime/JavaScriptRuntime.swift:404:5: error: unexpected ',' separator
-    ) async throws -> JavaScriptValue
-    ^
-/Users/runner/work/expo-test-app/expo-test-app/node_modules/expo-modules-jsi/apple/Sources/ExpoModulesJSI/Runtime/JavaScriptActor.swift:98:20: error: 'weak' must be a mutable variable, because it may change at runtime
-  private weak let runtime: JavaScriptRuntime?
-                   ^
-/Users/runner/work/expo-test-app/expo-test-app/node_modules/expo-modules-jsi/apple/Sources/ExpoModulesJSI/Runtime/JavaScriptActor.swift:117:20: error: 'weak' must be a mutable variable, because it may change at runtime
-  private weak let runtime: JavaScriptRuntime?
-                   ^
-/Users/runner/work/expo-test-app/expo-test-app/node_modules/expo-modules-jsi/apple/Sources/ExpoModulesJSI/Runtime/JavaScriptActor.swift:35:32: error: call to global actor 'JavaScriptActor'-isolated static method 'runIsolated' in a synchronous nonisolated context
-    let runner = unsafeBitCast(runIsolated as IsolatedRunner, to: NonisolatedRunner.self)
-                               ^
-/Users/runner/work/expo-test-app/expo-test-app/node_modules/expo-modules-jsi/apple/Sources/ExpoModulesJSI/Runtime/JavaScriptActor.swift:71:24: note: calls to static method 'runIsolated' from outside of its actor context are implicitly asynchronous
-  internal static func runIsolated<T: ~Copyable>(_ operation: @JavaScriptActor () -> T) -> T {
-                       ^
-/Users/runner/work/expo-test-app/expo-test-app/node_modules/expo-modules-jsi/apple/Sources/ExpoModulesJSI/Runtime/JavaScriptPropNameID.swift:6:20: error: 'weak' must be a mutable variable, because it may change at runtime
-  private weak let runtime: JavaScriptRuntime?
-                   ^
-/Users/runner/work/expo-test-app/expo-test-app/node_modules/expo-modules-jsi/apple/Sources/ExpoModulesJSI/Runtime/JavaScriptRef.swift:13:102: error: type 'Escapable' requires -enable-experimental-feature NonescapableTypes
-public final class JavaScriptRef<T: JavaScriptType & ~Copyable>: JavaScriptType, Sendable, Copyable, Escapable {
-                                                                                                     ^
-/Users/runner/work/expo-test-app/expo-test-app/node_modules/expo-modules-jsi/apple/Sources/ExpoModulesJSI/Runtime/Values/JavaScriptArray.swift:8:21: error: 'weak' must be a mutable variable, because it may change at runtime
-  internal weak let runtime: JavaScriptRuntime?
-                    ^
-/Users/runner/work/expo-test-app/expo-test-app/node_modules/expo-modules-jsi/apple/Sources/ExpoModulesJSI/Runtime/Values/JavaScriptArrayBuffer.swift:9:21: error: 'weak' must be a mutable variable, because it may change at runtime
-  internal weak let runtime: JavaScriptRuntime?
-                    ^
-/Users/runner/work/expo-test-app/expo-test-app/node_modules/expo-modules-jsi/apple/Sources/ExpoModulesJSI/Runtime/Values/JavaScriptBigInt.swift:40:21: error: 'weak' must be a mutable variable, because it may change at runtime
-  internal weak let runtime: JavaScriptRuntime?
-                    ^
-/Users/runner/work/expo-test-app/expo-test-app/node_modules/expo-modules-jsi/apple/Sources/ExpoModulesJSI/Runtime/Values/JavaScriptError.swift:15:20: error: 'weak' must be a mutable variable, because it may change at runtime
-  private weak let runtime: JavaScriptRuntime?
-                   ^
-/Users/runner/work/expo-test-app/expo-test-app/node_modules/expo-modules-jsi/apple/Sources/ExpoModulesJSI/Runtime/Values/JavaScriptError.swift:16:3: warning: 'nonisolated(unsafe)' is unnecessary for a constant with 'Sendable' type 'facebook.jsi.JSError', consider removing it
-  nonisolated(unsafe) private let pointee: facebook.jsi.JSError
-  ^~~~~~~~~~~~~~~~~~~~
-  
-/Users/runner/work/expo-test-app/expo-test-app/node_modules/expo-modules-jsi/apple/Sources/ExpoModulesJSI/Runtime/Values/JavaScriptError.swift:92:16: error: cannot use struct 'CppError' in an extension with public or '@usableFromInline' members; C++ types from imported module '__ObjC' do not support library evolution
-extension expo.CppError: Error {
-               ^
-__ObjC.expo:131:19: note: type declared here
-    public struct CppError : @unchecked Sendable {
-                  ^
-/Users/runner/work/expo-test-app/expo-test-app/node_modules/expo-modules-jsi/apple/Sources/ExpoModulesJSI/Runtime/Values/JavaScriptFunction.swift:7:21: error: 'weak' must be a mutable variable, because it may change at runtime
-  internal weak let runtime: JavaScriptRuntime?
-                    ^
-/Users/runner/work/expo-test-app/expo-test-app/node_modules/expo-modules-jsi/apple/Sources/ExpoModulesJSI/Runtime/Values/JavaScriptObject.swift:9:21: error: 'weak' must be a mutable variable, because it may change at runtime
-  internal weak let runtime: JavaScriptRuntime?
-                    ^
-/Users/runner/work/expo-test-app/expo-test-app/node_modules/expo-modules-jsi/apple/Sources/ExpoModulesJSI/Runtime/Values/JavaScriptPromise.swift:13:20: error: 'weak' must be a mutable variable, because it may change at runtime
-  private weak let runtime: JavaScriptRuntime?
-                   ^
-/Users/runner/work/expo-test-app/expo-test-app/node_modules/expo-modules-jsi/apple/Sources/ExpoModulesJSI/Runtime/Values/JavaScriptTypedArray.swift:11:21: error: 'weak' must be a mutable variable, because it may change at runtime
-  internal weak let runtime: JavaScriptRuntime?
-                    ^
-/Users/runner/work/expo-test-app/expo-test-app/node_modules/expo-modules-jsi/apple/Sources/ExpoModulesJSI/Runtime/Values/JavaScriptValue.swift:10:21: error: 'weak' must be a mutable variable, because it may change at runtime
-  internal weak let runtime: JavaScriptRuntime?
-                    ^
-/Users/runner/work/expo-test-app/expo-test-app/node_modules/expo-modules-jsi/apple/Sources/ExpoModulesJSI/Runtime/Values/JavaScriptValue.swift:9:64: error: type 'Escapable' requires -enable-experimental-feature NonescapableTypes
-public final class JavaScriptValue: JavaScriptType, Equatable, Escapable {
-                                                               ^
-/Users/runner/work/expo-test-app/expo-test-app/node_modules/expo-modules-jsi/apple/Sources/ExpoModulesJSI/Runtime/Values/JavaScriptWeakObject.swift:8:21: error: 'weak' must be a mutable variable, because it may change at runtime
-  internal weak let runtime: JavaScriptRuntime?
-                    ^
-note: Disabling previews because SWIFT_VERSION is set and SWIFT_OPTIMIZATION_LEVEL=-Owholemodule, expected -Onone (in target 'ExpoModulesJSI' from project 'ExpoModulesJSI')
+/Users/runner/work/expo-test-app/expo-test-app/node_modules/expo-modules-jsi/apple/Sources/ExpoModulesJSI-Cxx/include/RuntimeScheduler.h:56:26: error: 'RuntimeScheduler' cannot be annotated with either SWIFT_RETURNS_RETAINED or SWIFT_RETURNS_UNRETAINED because it is not returning a SWIFT_SHARED_REFERENCE type
+  SWIFT_RETURNS_RETAINED RuntimeScheduler(void *scheduler, ScheduleFn fn) noexcept
+                         ^
+/Users/runner/work/expo-test-app/expo-test-app/node_modules/expo-modules-jsi/apple/Sources/ExpoModulesJSI-Cxx/include/RuntimeScheduler.h:64:26: error: 'RuntimeScheduler' cannot be annotated with either SWIFT_RETURNS_RETAINED or SWIFT_RETURNS_UNRETAINED because it is not returning a SWIFT_SHARED_REFERENCE type
+  SWIFT_RETURNS_RETAINED RuntimeScheduler() {}
+                         ^
+Failed frontend command:
