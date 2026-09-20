@@ -37,34 +37,41 @@ jobs:
           cd ios
           pod install --repo-update || npx pod-install ios
 
-      - name: Build iOS Archive (Unsigned)
+      - name: Build iOS Application (Unsigned)
         run: |
           cd ios
           WORKSPACE=$(ls -d *.xcworkspace | head -n 1)
-          echo "Listing schemes in $WORKSPACE..."
-          xcodebuild -workspace "$WORKSPACE" -list
+          PROJECT=$(ls -d *.xcodeproj | head -n 1)
           
-          SCHEME=$(xcodebuild -workspace "$WORKSPACE" -list | awk '/Schemes:/{flag=1;next}/^[[:space:]]*$/{flag=0}flag{print $1; exit}' | tr -d ' ')
-          echo "Selected scheme: '$SCHEME'"
+          # Detect main app scheme from project (avoiding Pods schemes)
+          SCHEME=$(xcodebuild -project "$PROJECT" -list | awk '/Schemes:/{flag=1;next}/^[[:space:]]*$/{flag=0}flag{print; exit}' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
+          
+          echo "Workspace: $WORKSPACE"
+          echo "Project: $PROJECT"
+          echo "Building Scheme: '$SCHEME' for iOS device..."
           
           xcodebuild \
             -workspace "$WORKSPACE" \
             -scheme "$SCHEME" \
             -configuration Release \
+            -sdk iphoneos \
             -destination 'generic/platform=iOS' \
-            -archivePath "../build/App.xcarchive" \
-            archive \
+            -derivedDataPath "../build/DerivedData" \
+            build \
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO \
-            CODE_SIGN_IDENTITY=""
+            CODE_SIGN_IDENTITY="" \
+            AD_HOC_CODE_SIGNING_ALLOWED=YES
 
       - name: Package IPA
         run: |
           mkdir -p build/Payload
-          cp -r build/App.xcarchive/Products/Applications/*.app build/Payload/
+          APP_PATH=$(find build/DerivedData/Build/Products/Release-iphoneos -name "*.app" -type d | head -n 1)
+          echo "Found app at: $APP_PATH"
+          cp -r "$APP_PATH" build/Payload/
           cd build
-          zip -r ExpoGoTestApp.ipa Payload
-          echo "IPA successfully created at build/ExpoGoTestApp.ipa"
+          zip -r -q ExpoGoTestApp.ipa Payload
+          echo "IPA created successfully at build/ExpoGoTestApp.ipa"
 
       - name: Upload IPA Artifact
         uses: actions/upload-artifact@v4
