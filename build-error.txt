@@ -1,0 +1,50 @@
+[ExpoModulesJSI] Clearing stale build state (DerivedData, SwiftPM) before rebuild
+[ExpoModulesJSI] Building framework slice for iphoneos...
+2026-09-20 10:42:00.476 xcodebuild[5049:17895] Writing error result bundle to /var/folders/s6/5hzmn6lx4dz5nxs7k_0slzph0000gn/T/ResultBundle_2026-20-09_10-42-0000.xcresult
+xcodebuild: error: Could not resolve package dependencies:
+  Unexpected ',' separator
+  Unexpected ',' separator
+  Unexpected ',' separator
+  Unexpected ',' separator
+  Unexpected ',' separator
+  <unknown>:0: warning: legacy driver is now deprecated; consider avoiding specifying '-disallow-use-new-driver'
+/Users/runner/work/expo-test-app/expo-test-app/node_modules/expo-modules-jsi/apple/Package.swift:76:5: error: unexpected ',' separator
+ 74 |       type: .dynamic,
+ 75 |       targets: ["ExpoModulesJSI"],
+ 76 |     )
+    |     `- error: unexpected ',' separator
+ 77 |   ],
+ 78 |   dependencies: [],
+
+/Users/runner/work/expo-test-app/expo-test-app/node_modules/expo-modules-jsi/apple/Package.swift:121:5: error: unexpected ',' separator
+119 |         ])
+120 |       ],
+121 |     ),
+    |     `- error: unexpected ',' separator
+122 | 
+123 |     // C++ target (internal)
+
+/Users/runner/work/expo-test-app/expo-test-app/node_modules/expo-modules-jsi/apple/Package.swift:135:5: error: unexpected ',' separator
+133 |         .unsafeFlags(cxxIncludeFlags),
+134 |       ],
+135 |     ),
+    |     `- error: unexpected ',' separator
+136 | 
+137 |     // Tests
+
+/Users/runner/work/expo-test-app/expo-test-app/node_modules/expo-modules-jsi/apple/Package.swift:142:5: error: unexpected ',' separator
+140 |       dependencies: testFrameworks.dependencies,
+141 |       path: "Tests",
+142 |     ),
+    |     `- error: unexpected ',' separator
+143 | 
+144 |     // Benchmarks are opt-in: their suites are gated on the `EXPO_BENCHMARK` environment
+
+/Users/runner/work/expo-test-app/expo-test-app/node_modules/expo-modules-jsi/apple/Package.swift:151:5: error: unexpected ',' separator
+149 |       dependencies: testFrameworks.dependencies,
+150 |       path: "Benchmarks",
+151 |     ),
+    |     `- error: unexpected ',' separator
+152 |   ] + testFrameworks.binaryTargets,
+153 |   swiftLanguageModes: [.v6],
+
