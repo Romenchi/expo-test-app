@@ -45,11 +45,13 @@ jobs:
           
           # Detect main app scheme from project (avoiding Pods schemes)
           SCHEME=$(xcodebuild -project "$PROJECT" -list | awk '/Schemes:/{flag=1;next}/^[[:space:]]*$/{flag=0}flag{print; exit}' | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
+          SCHEME=${SCHEME:-ExpoGoTestApp}
           
           echo "Workspace: $WORKSPACE"
           echo "Project: $PROJECT"
           echo "Building Scheme: '$SCHEME' for iOS device..."
           
+          set -o pipefail
           xcodebuild \
             -workspace "$WORKSPACE" \
             -scheme "$SCHEME" \
@@ -58,10 +60,15 @@ jobs:
             -destination 'generic/platform=iOS' \
             -derivedDataPath "../build/DerivedData" \
             build \
+            CODE_SIGN_STYLE="Manual" \
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGN_IDENTITY="" \
-            AD_HOC_CODE_SIGNING_ALLOWED=YES
+            AD_HOC_CODE_SIGNING_ALLOWED=YES 2>&1 | tee ../xcodebuild.log || {
+              echo "==================== XCODEBUILD FAILED ===================="
+              grep -E "(error:|fatal error:)" ../xcodebuild.log || tail -n 80 ../xcodebuild.log
+              exit 1
+            }
 
       - name: Package IPA
         run: |
