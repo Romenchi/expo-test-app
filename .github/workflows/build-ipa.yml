@@ -7,7 +7,7 @@ on:
 
 jobs:
   build-ipa:
-    runs-on: macos-14
+    runs-on: macos-15
     permissions:
       contents: write
     env:
@@ -22,6 +22,11 @@ jobs:
         with:
           xcode-version: latest-stable
 
+      - name: Print Xcode & Swift Version
+        run: |
+          xcodebuild -version
+          swift --version
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -35,18 +40,9 @@ jobs:
       - name: Install dependencies
         run: npm ci || npm install
 
-      - name: Patch ExpoModulesJSI for Xcode 16 compatibility
+      - name: Patch ExpoModulesJSI for C++ bridging compatibility
         run: |
           python3 -c "
-          import re
-          path = 'node_modules/expo-modules-jsi/apple/Package.swift'
-          with open(path, 'r', encoding='utf-8') as f:
-              content = f.read()
-          content = re.sub(r'// swift-tools-version:.*', '// swift-tools-version: 6.0', content)
-          content = re.sub(r',\s*(\))', r'\1', content)
-          with open(path, 'w', encoding='utf-8') as f:
-              f.write(content)
-
           h_path = 'node_modules/expo-modules-jsi/apple/Sources/ExpoModulesJSI-Cxx/include/RuntimeScheduler.h'
           with open(h_path, 'r', encoding='utf-8') as f:
               h = f.read()
@@ -55,7 +51,7 @@ jobs:
               f.write(h)
           "
           sed -i '' 's/-disableAutomaticPackageResolution//' node_modules/expo-modules-jsi/apple/scripts/build-xcframework.sh || true
-          echo "Patched Package.swift & RuntimeScheduler.h successfully"
+          echo "Applied RuntimeScheduler.h bridging patch"
 
       - name: Prebuild iOS project
         run: npx expo prebuild --platform ios --no-install
