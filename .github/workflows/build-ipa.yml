@@ -33,9 +33,9 @@ jobs:
         run: |
           cd ios
           WORKSPACE=$(ls -d *.xcworkspace | head -n 1)
-          SCHEME="ExpoGoTestApp"
+          SCHEME=$(xcodebuild -workspace "$WORKSPACE" -list | awk '/Schemes:/{flag=1;next}/^[[:space:]]*$/{flag=0}flag{print $1; exit}' | tr -d ' ')
           
-          echo "Building scheme $SCHEME from $WORKSPACE..."
+          echo "Detected scheme: '$SCHEME' from workspace: '$WORKSPACE'"
           
           xcodebuild \
             -workspace "$WORKSPACE" \
