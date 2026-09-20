@@ -35,9 +35,18 @@ jobs:
       - name: Install dependencies
         run: npm ci || npm install
 
-      - name: Patch ExpoModulesJSI for Xcode 16 compatibility
+      - name: Patch ExpoModulesJSI Package.swift for Swift 6.0 compatibility
         run: |
-          sed -i '' 's/swift-tools-version: 6.2/swift-tools-version: 6.0/' node_modules/expo-modules-jsi/apple/Package.swift || true
+          python3 -c "
+          import re
+          path = 'node_modules/expo-modules-jsi/apple/Package.swift'
+          with open(path, 'r', encoding='utf-8') as f:
+              content = f.read()
+          content = re.sub(r'// swift-tools-version:.*', '// swift-tools-version: 6.0', content)
+          content = re.sub(r',\s*(\))', r'\1', content)
+          with open(path, 'w', encoding='utf-8') as f:
+              f.write(content)
+          "
           sed -i '' 's/-disableAutomaticPackageResolution//' node_modules/expo-modules-jsi/apple/scripts/build-xcframework.sh || true
           echo "Patched Package.swift:"
           head -n 2 node_modules/expo-modules-jsi/apple/Package.swift
