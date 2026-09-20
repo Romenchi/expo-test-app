@@ -70,15 +70,16 @@ jobs:
             -destination 'generic/platform=iOS' \
             -derivedDataPath "../build/DerivedData" \
             build \
-            CODE_SIGN_STYLE="Manual" \
-            CODE_SIGN_IDENTITY="-" \
+            CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO \
-            CODE_SIGNING_ALLOWED=YES \
-            DEVELOPMENT_TEAM="" \
-            AD_HOC_CODE_SIGNING_ALLOWED=YES \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGN_ENTITLEMENTS="" \
+            CODE_SIGNING_INJECT_BASE_ENTITLEMENTS=NO \
             ENABLE_USER_SCRIPT_SANDBOXING=NO 2>&1 | tee ../xcodebuild.log || {
-              echo "==================== XCODEBUILD ERRORS ===================="
-              grep -E -C 2 -i "(error:|fatal:)" ../xcodebuild.log | head -n 50 || tail -n 80 ../xcodebuild.log
+              echo "### ❌ Xcodebuild Build Failure Details" >> $GITHUB_STEP_SUMMARY
+              echo '```' >> $GITHUB_STEP_SUMMARY
+              grep -E -C 2 -i "(error:|fatal:)" ../xcodebuild.log | head -n 40 >> $GITHUB_STEP_SUMMARY || tail -n 40 ../xcodebuild.log >> $GITHUB_STEP_SUMMARY
+              echo '```' >> $GITHUB_STEP_SUMMARY
               exit 1
             }
 
